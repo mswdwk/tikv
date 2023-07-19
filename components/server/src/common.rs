@@ -200,8 +200,17 @@ impl TikvServerCore {
         }
         fn reserve_physical_space(data_dir: &String, available: u64, reserved_size: u64) {
             let path = Path::new(data_dir).join(file_system::SPACE_PLACEHOLDER_FILE);
+            let path_clone = path.clone();
             if let Err(e) = file_system::remove_file(path) {
-                warn!("failed to remove space holder on starting: {}", e);
+                warn!(
+                    "failed to remove space holder on starting: data_dir={},path={},available
+                    ={},reserved_size={},err={}",
+                    data_dir,
+                    path_clone.display(),
+                    available,
+                    reserved_size,
+                    e
+                );
             }
 
             // place holder file size is 20% of total reserved space.
